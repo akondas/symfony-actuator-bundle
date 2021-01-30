@@ -10,7 +10,7 @@ Production-ready features for your Symfony application. Actuator endpoints let y
 
 ## Endpoints
 
-- health
+- health (components in progress)
 - info
 
 ## Install
