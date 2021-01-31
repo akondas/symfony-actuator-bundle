@@ -43,10 +43,10 @@ class InfoCollector
     {
         return new Symfony(
             Kernel::VERSION,
-            4 === Kernel::MINOR_VERSION,
+            4 === Kernel::MINOR_VERSION, // @phpstan-ignore-line
             $this->kernel->getEnvironment(),
-            \DateTimeImmutable::createFromFormat('d/m/Y', '01/'.Kernel::END_OF_MAINTENANCE),
-            \DateTimeImmutable::createFromFormat('d/m/Y', '01/'.Kernel::END_OF_LIFE),
+            \DateTimeImmutable::createFromFormat('d/m/Y', '01/'.Kernel::END_OF_MAINTENANCE), // @phpstan-ignore-line
+            \DateTimeImmutable::createFromFormat('d/m/Y', '01/'.Kernel::END_OF_LIFE), // @phpstan-ignore-line
             array_map(function (Bundle $bundle): string {return get_class($bundle); }, $this->kernel->getBundles())
         );
     }
@@ -58,11 +58,11 @@ class InfoCollector
             return null;
         }
 
-        $head = explode(' ', trim(file_get_contents($gitDir.'/HEAD')));
+        $head = explode(' ', trim((string) file_get_contents($gitDir.'/HEAD')));
         if (count($head) === 1) {
             $commit = $head[0];
         } else {
-            $commit = trim(file_get_contents($gitDir.'/'.trim($head[1])));
+            $commit = trim((string) file_get_contents($gitDir.'/'.trim($head[1])));
         }
 
         return new Git(

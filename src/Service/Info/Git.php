@@ -25,6 +25,9 @@ class Git implements \JsonSerializable
         return $this->commit;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function jsonSerialize(): array
     {
         return [

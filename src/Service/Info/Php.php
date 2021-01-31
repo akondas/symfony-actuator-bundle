@@ -60,6 +60,9 @@ class Php implements \JsonSerializable
         return $this->opCacheEnabled;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function jsonSerialize(): array
     {
         return [

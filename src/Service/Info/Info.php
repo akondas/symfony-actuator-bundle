@@ -32,6 +32,9 @@ class Info implements \JsonSerializable
         return $this->git;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function jsonSerialize(): array
     {
         $data = [

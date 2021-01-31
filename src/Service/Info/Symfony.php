@@ -63,6 +63,9 @@ class Symfony implements \JsonSerializable
         return $this->bundles;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function jsonSerialize(): array
     {
         return [
