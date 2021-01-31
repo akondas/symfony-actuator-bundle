@@ -6,18 +6,25 @@ namespace Akondas\ActuatorBundle\Service\Info;
 
 class Info implements \JsonSerializable
 {
-    private Php $env;
+    private Php $php;
+    private Symfony $symfony;
     private ?Git $git;
 
-    public function __construct(Php $env, ?Git $git = null)
+    public function __construct(Php $php, Symfony $symfony, ?Git $git = null)
     {
-        $this->env = $env;
+        $this->php = $php;
+        $this->symfony = $symfony;
         $this->git = $git;
     }
 
-    public function env(): Php
+    public function php(): Php
     {
-        return $this->env;
+        return $this->php;
+    }
+
+    public function symfony(): Symfony
+    {
+        return $this->symfony;
     }
 
     public function git(): ?Git
@@ -28,7 +35,8 @@ class Info implements \JsonSerializable
     public function jsonSerialize(): array
     {
         $data = [
-            'env' => $this->env(),
+            'php' => $this->php(),
+            'symfony' => $this->symfony(),
         ];
         if ($this->git !== null) {
             $data['git'] = $this->git();

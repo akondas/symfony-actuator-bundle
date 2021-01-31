@@ -1,0 +1,9 @@
+actuator_health:
+  path: '/health'
+  controller: \Akondas\ActuatorBundle\Controller\HealthController::health
+  methods: ['GET']
+
+actuator_info:
+  path: '/info'
+  controller: Akondas\ActuatorBundle\Controller\InfoController::info
+  methods: ['GET']
