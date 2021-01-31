@@ -7,14 +7,12 @@ namespace Akondas\ActuatorBundle\Service\Info;
 class Git implements \JsonSerializable
 {
     private string $branch;
-    private string $commitHash;
-    private \DateTimeImmutable $commitTime;
+    private string $commit;
 
-    public function __construct(string $branch, string $commitHash, \DateTimeImmutable $commitTime)
+    public function __construct(string $branch, string $commit)
     {
         $this->branch = $branch;
-        $this->commitHash = $commitHash;
-        $this->commitTime = $commitTime;
+        $this->commit = $commit;
     }
 
     public function branch(): string
@@ -22,24 +20,16 @@ class Git implements \JsonSerializable
         return $this->branch;
     }
 
-    public function commitHash(): string
+    public function commit(): string
     {
-        return $this->commitHash;
-    }
-
-    public function commitTime(): \DateTimeImmutable
-    {
-        return $this->commitTime;
+        return $this->commit;
     }
 
     public function jsonSerialize(): array
     {
         return [
             'branch' => $this->branch(),
-            'commit' => [
-                'id' => $this->commitHash(),
-                'time' => $this->commitTime()->format(DATE_ISO8601),
-            ],
+            'commit' => $this->commit(),
         ];
     }
 }

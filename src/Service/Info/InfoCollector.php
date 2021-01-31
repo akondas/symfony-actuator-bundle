@@ -53,6 +53,22 @@ class InfoCollector
 
     private function collectGitInfo(): ?Git
     {
-        return null;
+        $gitDir = $this->kernel->getProjectDir().'/.git';
+        if (!file_exists($gitDir)) {
+            return null;
+        }
+
+        $head = explode(' ', trim(file_get_contents($gitDir.'/HEAD')));
+        if (count($head) === 1) {
+            $commit = $head[0];
+        } else {
+            $commit = trim(file_get_contents($gitDir.'/'.trim($head[1])));
+        }
+
+        return new Git(
+            // return commit hash when head is detached
+            $head[0] === $commit ? $commit : str_replace('refs/heads/', '', $head[1]),
+            $commit
+        );
     }
 }
