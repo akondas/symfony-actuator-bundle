@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Akondas\ActuatorBundle\Service\Health;
 
-abstract class HealthIndicator
+interface HealthIndicator
 {
+    public function name(): string;
+
+    public function health(): Health;
 }
