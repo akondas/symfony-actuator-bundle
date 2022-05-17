@@ -1,0 +1,10 @@
+imports:
+    - { resource: services.yml }
+
+services:
+  Akondas\ActuatorBundle\Controller\HealthController:
+    calls:
+      - [setContainer, ['@service_container']]
+    tags: ['controller.service_arguments']
+    arguments:
+      - {}

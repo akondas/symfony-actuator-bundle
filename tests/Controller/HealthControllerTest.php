@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Chaos\ActuatorBundle\Tests\Controller;
 
+use Akondas\ActuatorBundle\Controller\HealthController;
+
 class HealthControllerTest extends ControllerTestCase
 {
     public function testHealthEndpoint(): void
@@ -13,6 +15,6 @@ class HealthControllerTest extends ControllerTestCase
         $response = $this->client->getResponse();
 
         self::assertEquals(200, $response->getStatusCode());
-        self::assertEquals(['status' => 'up'], json_decode((string) $response->getContent(), true));
+        self::assertEquals(['status' => HealthController::HEALTHY_UP], json_decode((string) $response->getContent(), true));
     }
 }

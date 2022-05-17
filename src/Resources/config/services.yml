@@ -20,6 +20,7 @@ services:
       - '%akondas.health.disk_space.threshold%'
 
   Akondas\ActuatorBundle\Controller\HealthController:
+    tags: ['controller.service_arguments']
     arguments:
       - !tagged_iterator akondas.health_indicator
 

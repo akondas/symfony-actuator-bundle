@@ -22,10 +22,10 @@ class DiskSpaceHealthIndicator implements HealthIndicator
 
     public function health(): Health
     {
-        $space = disk_free_space($this->cacheDir);
+        $space = @disk_free_space($this->cacheDir);
 
         if ($space === false) {
-            return Health::down()->setDetails(['disk_free_space' => 'unkown', 'threshold' => $this->threshold]);
+            return Health::down()->setDetails(['disk_free_space' => 'unknown', 'threshold' => $this->threshold]);
         }
 
         if ($space < $this->threshold) {
