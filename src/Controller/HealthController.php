@@ -4,50 +4,27 @@ declare(strict_types=1);
 
 namespace Akondas\ActuatorBundle\Controller;
 
-use Akondas\ActuatorBundle\Service\Health\HealthIndicator;
+use Akondas\ActuatorBundle\Service\Health\Health;
+use Akondas\ActuatorBundle\Service\Health\HealthIndicatorStack;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class HealthController extends AbstractController
 {
-    public const HEALTHY_UP = 'UP';
-    public const HEALTHY_DOWN = 'DOWN';
+    private HealthIndicatorStack $healthIndicatorStack;
 
-    /**
-     * @var HealthIndicator[]
-     */
-    private iterable $handlers;
-
-    /**
-     * @param HealthIndicator[] $handlers
-     */
-    public function __construct(iterable $handlers)
+    public function __construct(HealthIndicatorStack $healthIndicatorStack)
     {
-        $this->handlers = $handlers;
+        $this->healthIndicatorStack = $healthIndicatorStack;
     }
 
     public function health(): JsonResponse
     {
-        $healthy = true;
-        $details = [];
-        foreach ($this->handlers as $handler) {
-            $handlerHealth = $handler->health();
-            $status = $handlerHealth->getStatus();
-            if ($status === false) {
-                $healthy = false;
-            }
+        $response = $this->healthIndicatorStack->jsonSerialize();
 
-            $details[$handler->name()] = ['status' => $status ? self::HEALTHY_UP : self::HEALTHY_DOWN, 'details' => $handlerHealth->getDetails()];
-        }
-
-        $response = [
-            'status' => $healthy ? self::HEALTHY_UP : self::HEALTHY_DOWN,
-        ];
-
-        if (count($details) !== 0) {
-            $response['details'] = $details;
-        }
-
-        return new JsonResponse($response, $healthy ? 200 : 503);
+        return new JsonResponse(
+            $response,
+            $response['status'] === Health::UP ? 200 : 503,
+        );
     }
 }

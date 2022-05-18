@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Chaos\ActuatorBundle\Tests\Controller;
 
 use Akondas\ActuatorBundle\Service\Health\DiskSpaceHealthIndicator;
+use Akondas\ActuatorBundle\Service\Health\Health;
 use PHPUnit\Framework\TestCase;
 
 class DiskSpaceHealthIndicatorTest extends TestCase
@@ -31,13 +32,7 @@ class DiskSpaceHealthIndicatorTest extends TestCase
         $health = $diskSpaceHealthIndicator->health();
 
         // then
-        self::assertFalse($health->getStatus());
-
-        self::assertArrayHasKey('disk_free_space', $health->getDetails());
-        self::assertEquals('unknown', $health->getDetails()['disk_free_space']);
-
-        self::assertArrayHasKey('threshold', $health->getDetails());
-        self::assertEquals(10000, $health->getDetails()['threshold']);
+        self::assertEquals(Health::UNKNOWN, $health->getStatus());
     }
 
     public function testNotHealthyIfDiskFreeSpaceIsBelowThreshold(): void
@@ -52,7 +47,7 @@ class DiskSpaceHealthIndicatorTest extends TestCase
         $health = $diskSpaceHealthIndicator->health();
 
         // then
-        self::assertFalse($health->getStatus());
+        self::assertEquals(Health::DOWN, $health->getStatus());
 
         self::assertArrayHasKey('disk_free_space', $health->getDetails());
         self::assertEquals(disk_free_space(sys_get_temp_dir()), $health->getDetails()['disk_free_space']);
@@ -73,7 +68,7 @@ class DiskSpaceHealthIndicatorTest extends TestCase
         $health = $diskSpaceHealthIndicator->health();
 
         // then
-        self::assertTrue($health->getStatus());
+        self::assertEquals(Health::UP, $health->getStatus());
 
         self::assertArrayHasKey('disk_free_space', $health->getDetails());
         self::assertEquals(disk_free_space(sys_get_temp_dir()), $health->getDetails()['disk_free_space']);

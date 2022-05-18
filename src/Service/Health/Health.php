@@ -6,7 +6,11 @@ namespace Akondas\ActuatorBundle\Service\Health;
 
 final class Health
 {
-    private bool $status;
+    const UP = 'UP';
+    const DOWN = 'DOWN';
+    const UNKNOWN = 'UNKNOWN';
+
+    private string $status;
 
     /**
      * @var array<string, mixed>
@@ -16,7 +20,7 @@ final class Health
     /**
      * @param array<string, mixed> $details
      */
-    public function __construct(bool $status, array $details = [])
+    public function __construct(string $status, array $details = [])
     {
         $this->status = $status;
         $this->details = $details;
@@ -24,12 +28,17 @@ final class Health
 
     public static function up(): self
     {
-        return new Health(true);
+        return new Health(self::UP);
     }
 
     public static function down(): self
     {
-        return new Health(false);
+        return new Health(self::DOWN);
+    }
+
+    public static function unknown(): self
+    {
+        return new Health(self::UNKNOWN);
     }
 
     /**
@@ -42,7 +51,7 @@ final class Health
         return $this;
     }
 
-    public function getStatus(): bool
+    public function getStatus(): string
     {
         return $this->status;
     }

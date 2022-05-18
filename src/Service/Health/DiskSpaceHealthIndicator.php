@@ -6,12 +6,12 @@ namespace Akondas\ActuatorBundle\Service\Health;
 
 class DiskSpaceHealthIndicator implements HealthIndicator
 {
-    private string $cacheDir;
+    private string $projectDir;
     private int $threshold;
 
-    public function __construct(string $cacheDir, int $threshold)
+    public function __construct(string $projectDir, int $threshold)
     {
-        $this->cacheDir = $cacheDir;
+        $this->projectDir = $projectDir;
         $this->threshold = $threshold;
     }
 
@@ -22,10 +22,10 @@ class DiskSpaceHealthIndicator implements HealthIndicator
 
     public function health(): Health
     {
-        $space = @disk_free_space($this->cacheDir);
+        $space = @disk_free_space($this->projectDir);
 
         if ($space === false) {
-            return Health::down()->setDetails(['disk_free_space' => 'unknown', 'threshold' => $this->threshold]);
+            return Health::unknown();
         }
 
         if ($space < $this->threshold) {
