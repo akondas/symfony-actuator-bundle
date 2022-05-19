@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Akondas\ActuatorBundle\Service\Health;
 
-class HealthIndicatorStack implements \JsonSerializable
+class HealthIndicatorStack
 {
     /**
      * @var HealthIndicator[]
@@ -31,10 +31,7 @@ class HealthIndicatorStack implements \JsonSerializable
         ];
     }
 
-    /**
-     * @return array{'status': string, 'details'?: array<string, array{'status': string, 'details': array<mixed>}>}
-     */
-    public function toArray(): array
+    public function check(): HealthStack
     {
         $status = Health::UP;
         $details = [];
@@ -56,22 +53,6 @@ class HealthIndicatorStack implements \JsonSerializable
             ];
         }
 
-        $response = [
-            'status' => $status,
-        ];
-
-        if (count($details) !== 0) {
-            $response['details'] = $details;
-        }
-
-        return $response;
-    }
-
-    /**
-     *  @return array{'status': string, 'details'?: array<string, array{'status': string, 'details': array<mixed>}>}
-     */
-    public function jsonSerialize()
-    {
-        return $this->toArray();
+        return new HealthStack($status, $details);
     }
 }

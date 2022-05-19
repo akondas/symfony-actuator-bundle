@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chaos\ActuatorBundle\Tests\Controller;
+namespace Chaos\ActuatorBundle\Tests\Service\Health;
 
 use Akondas\ActuatorBundle\Service\Health\Health;
 use Akondas\ActuatorBundle\Service\Health\HealthIndicator;
@@ -25,7 +25,7 @@ class HealthIndicatorStackTest extends TestCase
         $stack = new HealthIndicatorStack([$indicator1, $indicator2]);
 
         // when
-        $response = $stack->toArray();
+        $response = $stack->check()->jsonSerialize();
 
         // then
         self::assertArrayHasKey('status', $response);
@@ -46,7 +46,7 @@ class HealthIndicatorStackTest extends TestCase
         $stack = new HealthIndicatorStack([$indicator1, $indicator2]);
 
         // when
-        $response = $stack->toArray();
+        $response = $stack->check()->jsonSerialize();
 
         // then
         self::assertArrayHasKey('status', $response);
@@ -67,7 +67,7 @@ class HealthIndicatorStackTest extends TestCase
         $stack = new HealthIndicatorStack([$indicator1, $indicator2]);
 
         // when
-        $response = $stack->toArray();
+        $response = $stack->check()->jsonSerialize();
 
         // then
         self::assertArrayHasKey('status', $response);

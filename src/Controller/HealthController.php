@@ -20,11 +20,11 @@ class HealthController extends AbstractController
 
     public function health(): JsonResponse
     {
-        $response = $this->healthIndicatorStack->jsonSerialize();
+        $healthStack = $this->healthIndicatorStack->check();
 
         return new JsonResponse(
-            $response,
-            $response['status'] === Health::UP ? 200 : 503,
+            $healthStack,
+            $healthStack->isUp() ? 200 : 503,
         );
     }
 }

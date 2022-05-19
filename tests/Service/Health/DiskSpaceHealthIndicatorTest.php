@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chaos\ActuatorBundle\Tests\Controller;
+namespace Chaos\ActuatorBundle\Tests\Service\Health;
 
 use Akondas\ActuatorBundle\Service\Health\DiskSpaceHealthIndicator;
 use Akondas\ActuatorBundle\Service\Health\Health;
