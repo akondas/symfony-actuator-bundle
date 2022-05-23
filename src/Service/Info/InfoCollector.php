@@ -43,11 +43,13 @@ class InfoCollector
     {
         return new Symfony(
             Kernel::VERSION,
-            4 === Kernel::MINOR_VERSION, // @phpstan-ignore-line
+            4 === Kernel::MINOR_VERSION,
             $this->kernel->getEnvironment(),
             \DateTimeImmutable::createFromFormat('d/m/Y', '01/'.Kernel::END_OF_MAINTENANCE), // @phpstan-ignore-line
             \DateTimeImmutable::createFromFormat('d/m/Y', '01/'.Kernel::END_OF_LIFE), // @phpstan-ignore-line
-            array_map(function (Bundle $bundle): string {return get_class($bundle); }, $this->kernel->getBundles())
+            array_map(function (Bundle $bundle): string {
+                return get_class($bundle);
+            }, $this->kernel->getBundles())
         );
     }
 

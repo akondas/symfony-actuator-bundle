@@ -12,6 +12,7 @@ Production-ready features for your Symfony application. Actuator endpoints let y
 ## Endpoints
 
 - **/health** (`components` in progress)
+
   ```json
   {
     "status": "up"
@@ -19,6 +20,7 @@ Production-ready features for your Symfony application. Actuator endpoints let y
   ```
 
 - **/info**
+
   ```json
   {
     "git": {
@@ -61,6 +63,7 @@ composer require akondas/symfony-actuator-bundle
 ```
 
 Add `ActuatorBundle` to `config/bundles.php`
+
 ```php
 Akondas\ActuatorBundle\ActuatorBundle::class => ['all' => true]
 ```
@@ -99,22 +102,63 @@ security:
         Symfony\Component\Security\Core\User\User: plaintext
 ```
 
+## Extending
+
+### Health indicator
+
+You can write your own health indicator and implement your own logic to determine the state of your application. To do so, you have to implement the interface `HealthIndicator` and tag your service with the tag `akondas.health_indicator`.
+
+So for example, add following class under `src/Health/CustomHealthIndicator.php`:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Health;
+
+class CustomHealthIndicator implements HealthIndicator
+{
+    public function name(): string
+    {
+        return 'custom';
+    }
+
+    public function health(): Health
+    {
+        return Health::up()->setDetails(['state' => 'OK!']);
+    }
+}
+```
+
+Then add following definition to `config/services.yaml`:
+
+```yaml
+services:
+  App\Health\CustomHealthIndicator: 
+    tags: ['akondas.health_indicator']
+```
+
 ## Configuration reference
 
-Currently, no configuration required.
+The bundle works out of the box.
 
-TODO: add reference
+Additionally it checks for following environment variables:
+
+| Key                                   | Default  | Description                                                                                                                      |
+|---------------------------------------|----------|----------------------------------------------------------------------------------------------------------------------------------|
+| HEALTH_INDICATOR_DISK_SPACE_THRESHOLD | 52428800 | The threshold for the disk space health indicator. <br>Any disk space below that threshold will mark that health check as 'down' |
 
 ## Roadmap
 
 - flex recipe
 - status for components (database, mailer, notifier, etc.)
 - endpoints for components:
-    - messenger: show failed message, retry by message class (most wanted feature!)
-    - mailer: send email, 
-    - cache: clear cache maybe? 
-    - notifier: trigger test notification
-- UI: same as rest api but presented in the beauty of the admin panel. 
+  - messenger: show failed message, retry by message class (most wanted feature!)
+  - mailer: send email,
+  - cache: clear cache maybe?
+  - notifier: trigger test notification
+- UI: same as rest api but presented in the beauty of the admin panel.
   In particular, I care about the messenger component, because at the moment retrying erroneous messages is very clunky
 
 ## License

@@ -14,7 +14,8 @@ abstract class ControllerTestCase extends TestCase
 
     protected function setUp(): void
     {
-        $this->client = new KernelBrowser($kernel = new Kernel('test', false));
+        $kernel = new Kernel('test', false);
+        $this->client = new KernelBrowser($kernel);
         $this->client->disableReboot();
         $kernel->boot();
     }

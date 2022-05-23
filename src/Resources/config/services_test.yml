@@ -1,0 +1,7 @@
+imports:
+    - { resource: services.yml }
+
+services:
+  Akondas\ActuatorBundle\Service\Health\HealthIndicatorStack:
+    arguments:
+      - {  }
