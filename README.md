@@ -188,7 +188,7 @@ actuator:
         path: '%kernel.project_dir%'    # Path which should be monitored
   info:
     enabled: true                       # If info endpoint is enabled
-    builtin:                            # Builtin info collector
+    builtin:                            # Builtin info collector, change list for en- or disabling the collector
       - php                             
       - symfony
       - git
