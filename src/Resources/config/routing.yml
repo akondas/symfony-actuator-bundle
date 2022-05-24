@@ -1,0 +1,3 @@
+# Old configuration file with yml extension
+imports:
+    - { resource: routing.yaml }
