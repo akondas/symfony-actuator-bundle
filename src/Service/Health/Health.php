@@ -57,7 +57,7 @@ final class Health
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     public function getDetails(): array
     {

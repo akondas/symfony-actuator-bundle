@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace Akondas\ActuatorBundle\Service\Health;
 
+use Akondas\ActuatorBundle\Service\Health\Indicator\HealthIndicator;
+
 class HealthIndicatorStack
 {
     /**
-     * @var HealthIndicator[]
+     * @var iterable<HealthIndicator>
      */
     private iterable $indicators;
 
     /**
-     * @param HealthIndicator[] $indicators
+     * @param iterable<HealthIndicator> $indicators
      */
     public function __construct(iterable $indicators)
     {

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Chaos\ActuatorBundle\Tests\Service\Health;
+namespace Chaos\ActuatorBundle\Tests\Service\Health\Indicator;
 
-use Akondas\ActuatorBundle\Service\Health\DiskSpaceHealthIndicator;
 use Akondas\ActuatorBundle\Service\Health\Health;
+use Akondas\ActuatorBundle\Service\Health\Indicator\DiskSpaceHealthIndicator;
 use PHPUnit\Framework\TestCase;
 
 class DiskSpaceHealthIndicatorTest extends TestCase

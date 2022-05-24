@@ -1,0 +1,34 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  Akondas\ActuatorBundle\Controller\:
+    resource: '../../../src/Controller'
+    tags: [ 'controller.service_arguments' ]
+
+  Akondas\ActuatorBundle\Service\Info\InfoCollectorStack: ~
+
+  Akondas\ActuatorBundle\Service\Health\Indicator\DiskSpaceHealthIndicator: 
+    tags: ['akondas.health_indicator']
+    arguments:
+      - "%kernel.project_dir%"
+      - 52428800
+
+  Akondas\ActuatorBundle\Service\Health\HealthIndicatorStack:
+    arguments:
+      - !tagged_iterator akondas.health_indicator
+
+  Akondas\ActuatorBundle\Service\Info\Collector\Php: 
+    tags: ['akondas.info_collector']
+
+  Akondas\ActuatorBundle\Service\Info\Collector\Symfony: 
+    tags: ['akondas.info_collector']
+
+  Akondas\ActuatorBundle\Service\Info\Collector\Git: 
+    tags: ['akondas.info_collector']
+
+  Akondas\ActuatorBundle\Service\Info\InfoCollectorStack:
+    arguments:
+      - !tagged_iterator akondas.info_collector
+
