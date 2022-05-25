@@ -1,0 +1,12 @@
+services:
+  Akondas\ActuatorBundle\Service\Health\Indicator\DatabaseConnectionHealthIndicator: 
+    tags: ['akondas.health_indicator']
+    arguments:
+      - []
+
+  Akondas\ActuatorBundle\Service\Info\Collector\Database: 
+    tags: ['akondas.info_collector']
+    arguments:
+      - '@Doctrine\DBAL\Connection'
+
+

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Akondas\ActuatorBundle\DependencyInjection;
 
+use Akondas\ActuatorBundle\Service\Health\Indicator\DatabaseConnectionHealthIndicator;
 use Akondas\ActuatorBundle\Service\Health\Indicator\DiskSpaceHealthIndicator;
 use Akondas\ActuatorBundle\Service\Info\Collector\Git;
 use Akondas\ActuatorBundle\Service\Info\Collector\Php;
@@ -12,6 +13,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 
 final class ActuatorExtension extends Extension
 {
@@ -25,6 +27,11 @@ final class ActuatorExtension extends Extension
 
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
+
+        if ($container->willBeAvailable('doctrine/doctrine-bundle', Connection::class, [])) {
+            $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config/extensions'));
+            $loader->load('doctrine.yaml');
+        }
 
         $this->processHealthConfiguration($config['health'], $container);
         $this->processInfoConfiguration($config['info'], $container);
@@ -48,6 +55,34 @@ final class ActuatorExtension extends Extension
                 $definition = $container->getDefinition(DiskSpaceHealthIndicator::class);
                 $definition->replaceArgument(0, $diskSpaceConfig['path']);
                 $definition->replaceArgument(1, $diskSpaceConfig['threshold']);
+            }
+        }
+
+        if ($container->willBeAvailable('doctrine/doctrine-bundle', Connection::class, [])) {
+            if (is_array($config['builtin']) && is_array($config['builtin']['database'])) {
+                $databaseConfig = $config['builtin']['database'];
+                if (!$this->isConfigEnabled($container, $databaseConfig)) {
+                    $container->removeDefinition(DatabaseConnectionHealthIndicator::class);
+                } else {
+                    $definition = $container->getDefinition(DatabaseConnectionHealthIndicator::class);
+
+                    if (is_array($databaseConfig['connections'])) {
+                        $constructorArgument = [];
+                        foreach ($databaseConfig['connections'] as $name => $connection) {
+                            if (!is_array($connection)) {
+                                continue;
+                            }
+
+
+                            $constructorArgument[$name] = [
+                                'connection' => new Reference($connection['service']),
+                                'sql' => $connection['check_sql'],
+                            ];
+                        }
+
+                        $definition->replaceArgument(0, $constructorArgument);
+                    }
+                }
             }
         }
     }

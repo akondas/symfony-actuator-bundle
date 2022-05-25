@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Akondas\ActuatorBundle\Service\Health;
 
-final class Health
+final class Health implements HealthInterface
 {
     const UP = 'UP';
     const DOWN = 'DOWN';
@@ -41,6 +41,17 @@ final class Health
         return new Health(self::UNKNOWN);
     }
 
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function isUp(): bool
+    {
+        return Health::UP === $this->status;
+    }
+
+
     /**
      * @param array<string, mixed> $details
      */
@@ -50,17 +61,22 @@ final class Health
 
         return $this;
     }
-
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
     /**
      * @return array<string, mixed>
      */
     public function getDetails(): array
     {
         return $this->details;
+    }
+
+    /**
+     * @return array<string, string|array<mixed>>
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'status' => $this->status,
+            'details' => $this->details
+        ];
     }
 }

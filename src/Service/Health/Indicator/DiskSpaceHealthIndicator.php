@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Akondas\ActuatorBundle\Service\Health\Indicator;
 
 use Akondas\ActuatorBundle\Service\Health\Health;
+use Akondas\ActuatorBundle\Service\Health\HealthInterface;
 
 class DiskSpaceHealthIndicator implements HealthIndicator
 {
@@ -22,7 +23,7 @@ class DiskSpaceHealthIndicator implements HealthIndicator
         return 'diskSpace';
     }
 
-    public function health(): Health
+    public function health(): HealthInterface
     {
         $space = @disk_free_space($this->path);
 

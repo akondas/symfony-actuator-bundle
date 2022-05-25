@@ -21,40 +21,14 @@ class HealthIndicatorStack
         $this->indicators = $indicators;
     }
 
-    /**
-     * @return array<int, string>
-     */
-    private function defaultOrder(): array
-    {
-        return [
-            Health::UNKNOWN,
-            Health::DOWN,
-            Health::UP,
-        ];
-    }
-
     public function check(): HealthStack
     {
-        $status = Health::UP;
         $details = [];
+
         foreach ($this->indicators as $indicator) {
-            $health = $indicator->health();
-            $currentKey = array_search($status, $this->defaultOrder(), true);
-            $key = array_search($health->getStatus(), $this->defaultOrder(), true);
-
-            if ($key === false) {
-                $status = Health::UNKNOWN;
-            }
-            if ($currentKey > $key) {
-                $status = $this->defaultOrder()[$key];
-            }
-
-            $details[$indicator->name()] = [
-                'status' => $this->defaultOrder()[$key],
-                'details' => $health->getDetails(),
-            ];
+            $details[$indicator->name()] = $indicator->health();
         }
 
-        return new HealthStack($status, $details);
+        return new HealthStack($details);
     }
 }

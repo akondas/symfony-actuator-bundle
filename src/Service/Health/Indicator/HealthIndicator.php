@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Akondas\ActuatorBundle\Service\Health\Indicator;
 
-use Akondas\ActuatorBundle\Service\Health\Health;
+use Akondas\ActuatorBundle\Service\Health\HealthInterface;
 
 interface HealthIndicator
 {
     public function name(): string;
 
-    public function health(): Health;
+    public function health(): HealthInterface;
 }
