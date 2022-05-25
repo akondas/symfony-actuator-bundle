@@ -6,9 +6,11 @@ namespace Akondas\ActuatorBundle\DependencyInjection;
 
 use Akondas\ActuatorBundle\Service\Health\Indicator\DatabaseConnectionHealthIndicator;
 use Akondas\ActuatorBundle\Service\Health\Indicator\DiskSpaceHealthIndicator;
+use Akondas\ActuatorBundle\Service\Info\Collector\Database;
 use Akondas\ActuatorBundle\Service\Info\Collector\Git;
 use Akondas\ActuatorBundle\Service\Info\Collector\Php;
 use Akondas\ActuatorBundle\Service\Info\Collector\Symfony;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -29,7 +31,7 @@ final class ActuatorExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         if ($container->willBeAvailable('doctrine/doctrine-bundle', Connection::class, [])) {
-            $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config/extensions'));
+            $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/extensions'));
             $loader->load('doctrine.yaml');
         }
 
@@ -47,6 +49,7 @@ final class ActuatorExtension extends Extension
             $enabled = false;
         }
         $container->setParameter('actuator.health.enabled', $enabled);
+
         if (is_array($config['builtin']) && is_array($config['builtin']['disk_space'])) {
             $diskSpaceConfig = $config['builtin']['disk_space'];
             if (!$this->isConfigEnabled($container, $diskSpaceConfig)) {
@@ -73,7 +76,6 @@ final class ActuatorExtension extends Extension
                                 continue;
                             }
 
-
                             $constructorArgument[$name] = [
                                 'connection' => new Reference($connection['service']),
                                 'sql' => $connection['check_sql'],
@@ -98,15 +100,27 @@ final class ActuatorExtension extends Extension
         }
         $container->setParameter('actuator.info.enabled', $enabled);
 
-        if (is_array($config['builtin'])) {
-            if (false === in_array('php', $config['builtin'], true)) {
-                $container->removeDefinition(Php::class);
+        if (isset($config['builtin']) && is_array($config['builtin'])) {
+            $builtinMap = [
+                'php' => Php::class,
+                'symfony' => Symfony::class,
+                'git' => Git::class,
+            ];
+            foreach ($builtinMap as $key => $definition) {
+                if (isset($config['builtin'][$key]) && is_array($config['builtin'][$key]) && !$this->isConfigEnabled($container, $config['builtin'][$key])) {
+                    $container->removeDefinition($definition);
+                }
             }
-            if (false === in_array('symfony', $config['builtin'], true)) {
-                $container->removeDefinition(Symfony::class);
-            }
-            if (false === in_array('git', $config['builtin'], true)) {
-                $container->removeDefinition(Git::class);
+            if ($container->willBeAvailable('doctrine/doctrine-bundle', Connection::class, []) && isset($config['builtin']['database'])) {
+                $databaseConfig = $config['builtin']['database'];
+                if (isset($databaseConfig['connections']) && is_array($databaseConfig['connections'])) {
+                    $connectionReferences = [];
+                    foreach ($databaseConfig['connections'] as $name => $connectionDefintion) {
+                        $connectionReferences[$name] = new Reference($connectionDefintion);
+                    }
+                    $definition = $container->getDefinition(Database::class);
+                    $definition->replaceArgument(0, $connectionReferences);
+                }
             }
         }
     }

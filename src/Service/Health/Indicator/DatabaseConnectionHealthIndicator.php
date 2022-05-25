@@ -9,11 +9,9 @@ use Akondas\ActuatorBundle\Service\Health\HealthInterface;
 use Akondas\ActuatorBundle\Service\Health\HealthStack;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\ConnectionException;
-use InvalidArgumentException;
 
 class DatabaseConnectionHealthIndicator implements HealthIndicator
 {
-
     /**
      * @var array<array{'connection': Connection, 'sql': ?string}>
      */
@@ -40,19 +38,28 @@ class DatabaseConnectionHealthIndicator implements HealthIndicator
             $checkSql = $check['sql'];
             try {
                 if (!$connection instanceof Connection) {
-                    throw new InvalidArgumentException();
+                    throw new \InvalidArgumentException();
                 }
 
+                $detailCheck = [];
                 if (null !== $checkSql) {
                     $connection->executeQuery($checkSql);
+                    $detailCheck['check_sql'] = $checkSql;
                 } else {
                     $connection->connect();
                 }
 
-                $healthList[$name] = Health::up()->setDetails(['checkedWith' => null !== $checkSql ? 'sql' : 'connection']);
+                $healthList[$name] = Health::up($detailCheck);
             } catch (ConnectionException $e) {
-                $healthList[$name] = Health::down()->setDetails(['checkedWith' => null !== $checkSql ? 'sql' : 'connection', 'error' => $e->getMessage()]);
+                $healthList[$name] = Health::down($e->getMessage());
             }
+        }
+
+        if (count($healthList) === 0) {
+            return Health::unknown('No database connection checked');
+        }
+        if (count($healthList) === 1) {
+            return current($healthList);
         }
 
         return new HealthStack($healthList);

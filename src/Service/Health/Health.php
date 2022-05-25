@@ -17,28 +17,34 @@ final class Health implements HealthInterface
      */
     private array $details;
 
+    private ?string $error;
+
     /**
      * @param array<string, mixed> $details
      */
-    public function __construct(string $status, array $details = [])
+    public function __construct(string $status, array $details = [], ?string $error = null)
     {
         $this->status = $status;
         $this->details = $details;
+        $this->error = $error;
     }
 
-    public static function up(): self
+    /**
+     * @param array<string, mixed> $details
+     */
+    public static function up(array $details = []): self
     {
-        return new Health(self::UP);
+        return new Health(self::UP, $details);
     }
 
-    public static function down(): self
+    public static function down(?string $error = null): self
     {
-        return new Health(self::DOWN);
+        return new Health(self::DOWN, [], $error);
     }
 
-    public static function unknown(): self
+    public static function unknown(?string $error = null): self
     {
-        return new Health(self::UNKNOWN);
+        return new Health(self::UNKNOWN, [], $error);
     }
 
     public function getStatus(): string
@@ -51,7 +57,6 @@ final class Health implements HealthInterface
         return Health::UP === $this->status;
     }
 
-
     /**
      * @param array<string, mixed> $details
      */
@@ -61,6 +66,7 @@ final class Health implements HealthInterface
 
         return $this;
     }
+
     /**
      * @return array<string, mixed>
      */
@@ -69,14 +75,33 @@ final class Health implements HealthInterface
         return $this->details;
     }
 
+    public function setError(?string $error): self
+    {
+        $this->error = $error;
+
+        return $this;
+    }
+
+    public function getError(): ?string
+    {
+        return $this->error;
+    }
+
     /**
      * @return array<string, string|array<mixed>>
      */
     public function jsonSerialize(): array
     {
-        return [
-            'status' => $this->status,
-            'details' => $this->details
-        ];
+        $serialized = ['status' => $this->status];
+
+        if (count($this->details) > 0) {
+            $serialized['details'] = $this->details;
+        }
+
+        if (null !== $this->error) {
+            $serialized['error'] = $this->error;
+        }
+
+        return $serialized;
     }
 }

@@ -6,7 +6,6 @@ namespace Akondas\ActuatorBundle\Service\Info\Collector;
 
 use Akondas\ActuatorBundle\Service\Info\Info;
 use Doctrine\DBAL\Connection;
-use InvalidArgumentException;
 
 class Database implements Collector
 {
@@ -28,14 +27,32 @@ class Database implements Collector
         $connectionInfo = [];
         foreach ($this->connections as $name => $connection) {
             if (!$connection instanceof Connection) {
-                throw new InvalidArgumentException();
+                throw new \InvalidArgumentException();
             }
 
+            $connectionParams = $connection->getParams();
             $connectionInfo[$name] = [
                 'type' => trim((new \ReflectionClass($connection->getDatabasePlatform()))->getShortName(), 'Platform'),
-                'driver' => get_class($connection->getDriver())
+                'driver' => $connectionParams['driver'] ?? get_class($connection->getDriver()),
             ];
+
+            if (isset($connectionParams['path'])) {
+                $connectionInfo[$name]['path'] = $connectionParams['path'];
+            }
+
+            if (isset($connectionParams['dbname'])) {
+                $connectionInfo[$name]['dbname'] = $connectionParams['dbname'];
+            }
+
+            if (isset($connectionParams['host'])) {
+                $connectionInfo[$name]['host'] = $connectionParams['host'];
+            }
+
+            if (isset($connectionParams['port'])) {
+                $connectionInfo[$name]['port'] = $connectionParams['port'];
+            }
         }
+
         return new Info('database', $connectionInfo);
     }
 }

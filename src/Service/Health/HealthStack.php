@@ -6,7 +6,6 @@ namespace Akondas\ActuatorBundle\Service\Health;
 
 final class HealthStack implements HealthInterface
 {
-
     /**
      * @var array<string, HealthInterface>
      */
@@ -36,7 +35,6 @@ final class HealthStack implements HealthInterface
     {
         $status = Health::UP;
         foreach ($this->healthList as $health) {
-
             $currentKey = array_search($status, $this->defaultOrder(), true);
             $key = array_search($health->getStatus(), $this->defaultOrder(), true);
 
@@ -55,6 +53,7 @@ final class HealthStack implements HealthInterface
     {
         return Health::UP === $this->getStatus();
     }
+
     /**
      * @return array<mixed>
      */
