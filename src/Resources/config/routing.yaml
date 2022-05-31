@@ -1,4 +1,3 @@
-# Old configuration file with yml extension
 actuator_health:
   path: '/health'
   controller: \Akondas\ActuatorBundle\Controller\HealthController::health

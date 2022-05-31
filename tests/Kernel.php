@@ -16,6 +16,21 @@ class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
+    /**
+     * @var array<string, mixed>
+     */
+    private array $actuatorConfig;
+
+    /**
+     * @param array<string, mixed> $actuatorConfig
+     */
+    public function __construct(string $environment, bool $debug, array $actuatorConfig = [])
+    {
+        parent::__construct($environment, $debug);
+
+        $this->actuatorConfig = $actuatorConfig;
+    }
+
     public function registerBundles(): iterable
     {
         return [
@@ -26,11 +41,12 @@ class Kernel extends BaseKernel
 
     private function configureContainer(ContainerConfigurator $containerConfigurator, LoaderInterface $loader): void
     {
-        $loader->load($this->getProjectDir().'/src/Resources/config/services_test.yml');
+        $loader->load($this->getProjectDir().'/src/Resources/config/services_test.yaml');
+        $containerConfigurator->extension('actuator', $this->actuatorConfig);
     }
 
     protected function configureRoutes(RoutingConfigurator $routes): void
     {
-        $routes->import($this->getProjectDir().'/src/Resources/config/routing.yml');
+        $routes->import($this->getProjectDir().'/src/Resources/config/routing.yaml');
     }
 }

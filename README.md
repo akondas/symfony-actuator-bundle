@@ -68,11 +68,11 @@ Add `ActuatorBundle` to `config/bundles.php`
 Akondas\ActuatorBundle\ActuatorBundle::class => ['all' => true]
 ```
 
-Add `actuator.yml` to `config/routes` directory (you can change prefix):
+Add `actuator.yaml` to `config/routes` directory (you can change prefix):
 
 ```yaml
 web_profiler_wdt:
-  resource: '@ActuatorBundle/Resources/config/routing.yml'
+  resource: '@ActuatorBundle/Resources/config/routing.yaml'
   prefix: /api/actuator
 ```
 
@@ -82,7 +82,7 @@ web_profiler_wdt:
 
 Use the built-in [symfony/security](https://symfony.com/doc/current/security.html) component to secure api.
 
-Example configuration (`security.yml`) for Basic Authentication:
+Example configuration (`security.yaml`) for Basic Authentication:
 
 ```yaml
 security:
@@ -117,6 +117,9 @@ declare(strict_types=1);
 
 namespace App\Health;
 
+use Akondas\Service\Health\HealthIndicator;
+use Akondas\Service\Health\Health;
+
 class CustomHealthIndicator implements HealthIndicator
 {
     public function name(): string
@@ -139,15 +142,57 @@ services:
     tags: ['akondas.health_indicator']
 ```
 
+### Information Collector
+
+Similar to a health indicator, you can write also a service which exposes informations. To do so, you have to implement the interface `Collector` and add the tag `akondas.info_collector`.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Info;
+
+use Akondas\Service\Info\Collector\Collector;
+use Akondas\Service\Info\Info;
+
+class CustomInfoCollector implements Collector
+{
+    public function collect(): Info
+    {
+        return new Info('my-info', [ 'time' => time() ]);
+    }
+}
+```
+
+Then add following definition to `config/services.yaml`:
+
+```yaml
+services:
+  App\Info\CustomInfoCollector: 
+    tags: ['akondas.info_collector']
+```
+
 ## Configuration reference
 
-The bundle works out of the box.
+The bundle works out of the box with no configuration. If you want to change the default configuration, create a configuration file under `config/packages/actuator.yaml`. The default configuration is as follows:
 
-Additionally it checks for following environment variables:
-
-| Key                                   | Default  | Description                                                                                                                      |
-|---------------------------------------|----------|----------------------------------------------------------------------------------------------------------------------------------|
-| HEALTH_INDICATOR_DISK_SPACE_THRESHOLD | 52428800 | The threshold for the disk space health indicator. <br>Any disk space below that threshold will mark that health check as 'down' |
+```yaml
+actuator:
+  health:
+    enabled: true                       # If health endpoint is enabled 
+    builtin:
+      disk_space:
+        enabled: true                   # If disk space health indicator should be enabled 
+        threshold: 52428800             # Threshold for failure (52428800 = 50 MB)
+        path: '%kernel.project_dir%'    # Path which should be monitored
+  info:
+    enabled: true                       # If info endpoint is enabled
+    builtin:                            # Builtin info collector, change list for en- or disabling the collector
+      - php                             
+      - symfony
+      - git
+```
 
 ## Roadmap
 

@@ -9,12 +9,12 @@ final class HealthStack implements \JsonSerializable
     private string $status;
 
     /**
-     * @var array<string, array{'status': string, 'details': array<string, string|int|float|bool|null>|null}>
+     * @var array<string, array{'status': string, 'details': array<string, mixed>|null}>
      */
     private array $details;
 
     /**
-     * @param array<string, array{'status': string, 'details': array<string, string|int|float|bool|null>|null}> $details
+     * @param array<string, array{'status': string, 'details': array<string, mixed>|null}> $details
      */
     public function __construct(string $status, array $details = [])
     {
@@ -28,7 +28,7 @@ final class HealthStack implements \JsonSerializable
     }
 
     /**
-     * @return array{'status': string, 'details': array<string, array{'status': string, 'details': array<string, string|int|float|bool|null>|null}>}
+     * @return array{'status': string, 'details': array<string, array{'status': string, 'details': array<string, mixed>|null}>}
      */
     public function jsonSerialize(): array
     {
