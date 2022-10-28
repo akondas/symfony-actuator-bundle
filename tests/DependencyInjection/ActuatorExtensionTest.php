@@ -163,32 +163,56 @@ class ActuatorExtensionTest extends TestCase
         $this->extension->load($config, $this->containerBuilder);
 
         // then
+<<<<<<< HEAD
         self::assertTrue($this->containerBuilder->hasDefinition(Php::class));
         self::assertTrue($this->containerBuilder->hasDefinition(Symfony::class));
         self::assertTrue($this->containerBuilder->hasDefinition(Git::class));
+=======
+        self::assertFalse($this->containerBuilder->hasDefinition(Php::class));
+        self::assertFalse($this->containerBuilder->hasDefinition(Symfony::class));
+        self::assertFalse($this->containerBuilder->hasDefinition(Git::class));
+>>>>>>> master
     }
 
     public function testInfoBuiltinListCanBeDefined(): void
     {
         // given
+<<<<<<< HEAD
         $config = ['actuator' => ['info' => ['builtin' => ['php' => ['enabled' => true]]]]];
+=======
+        $config = ['actuator' => ['info' => ['builtin' => ['php']]]];
+>>>>>>> master
 
         // when
         $this->extension->load($config, $this->containerBuilder);
 
         // then
         self::assertTrue($this->containerBuilder->hasDefinition(Php::class));
+<<<<<<< HEAD
+=======
+        self::assertFalse($this->containerBuilder->hasDefinition(Symfony::class));
+        self::assertFalse($this->containerBuilder->hasDefinition(Git::class));
+>>>>>>> master
     }
 
     public function testInfoBuiltinListCanBeDefinedWithMultipleEntries(): void
     {
         // given
+<<<<<<< HEAD
         $config = ['actuator' => ['info' => ['builtin' => ['git' => ['enabled' => false]]]]];
+=======
+        $config = ['actuator' => ['info' => ['builtin' => ['php', 'symfony']]]];
+>>>>>>> master
 
         // when
         $this->extension->load($config, $this->containerBuilder);
 
         // then
+<<<<<<< HEAD
+=======
+        self::assertTrue($this->containerBuilder->hasDefinition(Php::class));
+        self::assertTrue($this->containerBuilder->hasDefinition(Symfony::class));
+>>>>>>> master
         self::assertFalse($this->containerBuilder->hasDefinition(Git::class));
     }
 }

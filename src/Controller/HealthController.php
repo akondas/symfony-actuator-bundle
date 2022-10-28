@@ -23,6 +23,7 @@ class HealthController extends AbstractController
         if ($this->getParameter('actuator.health.enabled') === false) {
             throw new NotFoundHttpException();
         }
+        
         $healthStack = $this->healthIndicatorStack->check();
 
         return new JsonResponse(
