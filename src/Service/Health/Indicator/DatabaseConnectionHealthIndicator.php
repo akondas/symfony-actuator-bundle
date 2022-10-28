@@ -8,7 +8,7 @@ use Akondas\ActuatorBundle\Service\Health\Health;
 use Akondas\ActuatorBundle\Service\Health\HealthInterface;
 use Akondas\ActuatorBundle\Service\Health\HealthStack;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception\ConnectionException;
+use Doctrine\DBAL\Exception;
 
 class DatabaseConnectionHealthIndicator implements HealthIndicator
 {
@@ -38,7 +38,7 @@ class DatabaseConnectionHealthIndicator implements HealthIndicator
             $checkSql = $check['sql'];
             try {
                 if (!$connection instanceof Connection) {
-                    throw new \InvalidArgumentException();
+                    throw new \InvalidArgumentException(sprintf('"connection" should be instance of %s, but got %s', Connection::class, get_class($connection)));
                 }
 
                 $detailCheck = [];
@@ -50,8 +50,10 @@ class DatabaseConnectionHealthIndicator implements HealthIndicator
                 }
 
                 $healthList[$name] = Health::up($detailCheck);
-            } catch (ConnectionException $e) {
+            } catch (Exception $e) {
                 $healthList[$name] = Health::down($e->getMessage());
+            } catch (\InvalidArgumentException $e) {
+                $healthList[$name] = Health::unknown($e->getMessage());
             }
         }
 

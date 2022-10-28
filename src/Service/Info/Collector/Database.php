@@ -6,6 +6,7 @@ namespace Akondas\ActuatorBundle\Service\Info\Collector;
 
 use Akondas\ActuatorBundle\Service\Info\Info;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 
 class Database implements Collector
 {
@@ -27,30 +28,36 @@ class Database implements Collector
         $connectionInfo = [];
         foreach ($this->connections as $name => $connection) {
             if (!$connection instanceof Connection) {
-                throw new \InvalidArgumentException();
+                $connectionInfo[$name] = [
+                    'type' => 'Unknown',
+                    'database' => 'Unknown',
+                    'driver' => 'Unknown',
+                ];
+
+                continue;
             }
 
-            $connectionParams = $connection->getParams();
+            if ($connection->getDatabasePlatform() === null) {
+                $type = 'Unknown';
+            } else {
+                try {
+                    $type = trim((new \ReflectionClass($connection->getDatabasePlatform()))->getShortName(), 'Platform');
+                } catch (Exception $e) {
+                    $type = 'Unknown';
+                }
+            }
+
+            try {
+                $database = $connection->getDatabase();
+            } catch (Exception $e) {
+                $database = 'Unknown';
+            }
+
             $connectionInfo[$name] = [
-                'type' => trim((new \ReflectionClass($connection->getDatabasePlatform()))->getShortName(), 'Platform'),
-                'driver' => $connectionParams['driver'] ?? get_class($connection->getDriver()),
+                'type' => $type,
+                'database' => $database,
+                'driver' => get_class($connection->getDriver()),
             ];
-
-            if (isset($connectionParams['path'])) {
-                $connectionInfo[$name]['path'] = $connectionParams['path'];
-            }
-
-            if (isset($connectionParams['dbname'])) {
-                $connectionInfo[$name]['dbname'] = $connectionParams['dbname'];
-            }
-
-            if (isset($connectionParams['host'])) {
-                $connectionInfo[$name]['host'] = $connectionParams['host'];
-            }
-
-            if (isset($connectionParams['port'])) {
-                $connectionInfo[$name]['port'] = $connectionParams['port'];
-            }
         }
 
         return new Info('database', $connectionInfo);

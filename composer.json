@@ -31,7 +31,8 @@
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan-symfony": "^1.1",
         "phpstan/phpstan-phpunit": "^1.1",
-        "ext-json": "*"
+        "ext-json": "*",
+        "doctrine/doctrine-bundle": "^2.7"
     },
     "autoload": {
         "psr-4": {
