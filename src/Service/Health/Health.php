@@ -6,9 +6,9 @@ namespace Akondas\ActuatorBundle\Service\Health;
 
 final class Health implements HealthInterface
 {
-    const UP = 'UP';
-    const DOWN = 'DOWN';
-    const UNKNOWN = 'UNKNOWN';
+    public const UP = 'UP';
+    public const DOWN = 'DOWN';
+    public const UNKNOWN = 'UNKNOWN';
 
     private string $status;
 
