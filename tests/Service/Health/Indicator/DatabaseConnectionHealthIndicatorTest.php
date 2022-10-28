@@ -30,7 +30,7 @@ class DatabaseConnectionHealthIndicatorTest extends TestCase
             ],
         ];
 
-        $healthIndicator = new DatabaseConnectionHealthIndicator($checks);
+        $healthIndicator = new DatabaseConnectionHealthIndicator($checks); // @phpstan-ignore-line
 
         $health = $healthIndicator->health();
 

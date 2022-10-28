@@ -37,14 +37,15 @@ class Database implements Collector
                 continue;
             }
 
-            if ($connection->getDatabasePlatform() === null) {
-                $type = 'Unknown';
-            } else {
-                try {
-                    $type = trim((new \ReflectionClass($connection->getDatabasePlatform()))->getShortName(), 'Platform');
-                } catch (Exception $e) {
+            try {
+                $platform = $connection->getDatabasePlatform();
+                if ($platform === null) { // @phpstan-ignore-line
                     $type = 'Unknown';
+                } else {
+                    $type = trim((new \ReflectionClass($connection->getDatabasePlatform()))->getShortName(), 'Platform');
                 }
+            } catch (Exception $e) {
+                $type = 'Unknown';
             }
 
             try {
@@ -54,9 +55,9 @@ class Database implements Collector
             }
 
             $connectionInfo[$name] = [
-                'type' => $type,
-                'database' => $database,
-                'driver' => get_class($connection->getDriver()),
+            'type' => $type,
+            'database' => $database,
+            'driver' => get_class($connection->getDriver()),
             ];
         }
 

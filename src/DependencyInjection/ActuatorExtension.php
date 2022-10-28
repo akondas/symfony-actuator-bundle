@@ -11,7 +11,6 @@ use Akondas\ActuatorBundle\Service\Info\Collector\Git;
 use Akondas\ActuatorBundle\Service\Info\Collector\Php;
 use Akondas\ActuatorBundle\Service\Info\Collector\Symfony;
 use Doctrine\DBAL\Connection;
-
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;

@@ -19,7 +19,7 @@ class DatabaseTest extends TestCase
 
     public function testDatabaseWillReturnUnknownIfNoConnection(): void
     {
-        $collection = (new Database(['default' => new \stdClass()]))->collect();
+        $collection = (new Database(['default' => new \stdClass()]))->collect(); // @phpstan-ignore-line
 
         self::assertFalse($collection->isEmpty());
         self::assertArrayHasKey('default', $collection->jsonSerialize());
