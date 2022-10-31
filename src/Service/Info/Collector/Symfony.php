@@ -22,7 +22,7 @@ class Symfony implements Collector
     {
         return new Info('symfony', [
             'version' => Kernel::VERSION,
-            'lts' => 4 === Kernel::MINOR_VERSION, // @phpstan-ignore-line
+            'lts' => 4 === Kernel::MINOR_VERSION,
             'environment' => $this->kernel->getEnvironment(),
             'endOfMaintenance' => \DateTimeImmutable::createFromFormat('d/m/Y', '01/'.Kernel::END_OF_MAINTENANCE),
             'endOfLife' => \DateTimeImmutable::createFromFormat('d/m/Y', '01/'.Kernel::END_OF_LIFE),
