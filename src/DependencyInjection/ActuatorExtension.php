@@ -112,14 +112,16 @@ final class ActuatorExtension extends Extension
                 }
             }
             if ($container->willBeAvailable('doctrine/doctrine-bundle', Connection::class, []) && isset($config['builtin']['database'])) {
-                $databaseConfig = $config['builtin']['database'];
-                if (isset($databaseConfig['connections']) && is_array($databaseConfig['connections'])) {
-                    $connectionReferences = [];
-                    foreach ($databaseConfig['connections'] as $name => $connectionDefintion) {
-                        $connectionReferences[$name] = new Reference($connectionDefintion);
+                if ($this->isConfigEnabled($container, $config['builtin']['database'])) {
+                    $databaseConfig = $config['builtin']['database'];
+                    if (isset($databaseConfig['connections']) && is_array($databaseConfig['connections'])) {
+                        $connectionReferences = [];
+                        foreach ($databaseConfig['connections'] as $name => $connectionDefintion) {
+                            $connectionReferences[$name] = new Reference($connectionDefintion);
+                        }
+                        $definition = $container->getDefinition(Database::class);
+                        $definition->replaceArgument(0, $connectionReferences);
                     }
-                    $definition = $container->getDefinition(Database::class);
-                    $definition->replaceArgument(0, $connectionReferences);
                 }
             }
         }
