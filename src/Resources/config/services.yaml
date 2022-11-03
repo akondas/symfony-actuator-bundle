@@ -7,8 +7,6 @@ services:
     resource: '../../../src/Controller'
     tags: [ 'controller.service_arguments' ]
 
-  Akondas\ActuatorBundle\Service\Info\InfoCollectorStack: ~
-
   Akondas\ActuatorBundle\Service\Health\Indicator\DiskSpaceHealthIndicator: 
     tags: ['akondas.health_indicator']
     arguments:

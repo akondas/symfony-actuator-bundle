@@ -47,6 +47,7 @@ class DiskSpaceHealthIndicatorTest extends TestCase
         $health = $diskSpaceHealthIndicator->health();
 
         // then
+        self::assertInstanceOf(Health::class, $health);
         self::assertEquals(Health::DOWN, $health->getStatus());
 
         self::assertArrayHasKey('disk_free_space', $health->getDetails());
@@ -68,6 +69,7 @@ class DiskSpaceHealthIndicatorTest extends TestCase
         $health = $diskSpaceHealthIndicator->health();
 
         // then
+        self::assertInstanceOf(Health::class, $health);
         self::assertEquals(Health::UP, $health->getStatus());
 
         self::assertArrayHasKey('disk_free_space', $health->getDetails());

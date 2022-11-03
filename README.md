@@ -52,6 +52,13 @@ Production-ready features for your Symfony application. Actuator endpoints let y
         "SecurityBundle": "Symfony\\Bundle\\SecurityBundle\\SecurityBundle",
         "ActuatorBundle": "Akondas\\ActuatorBundle\\ActuatorBundle"
       }
+    },
+    "database": {
+      "default": {
+        "type": "stgreSQL100",
+        "database": "app",
+        "driver": "Symfony\\Bridge\\Doctrine\\Middleware\\Debug\\Driver"
+      }
     }
   }
   ```
@@ -180,19 +187,52 @@ The bundle works out of the box with no configuration. If you want to change the
 ```yaml
 actuator:
   health:
-    enabled: true                       # If health endpoint is enabled 
+    enabled: true
     builtin:
       disk_space:
-        enabled: true                   # If disk space health indicator should be enabled 
-        threshold: 52428800             # Threshold for failure (52428800 = 50 MB)
-        path: '%kernel.project_dir%'    # Path which should be monitored
+        enabled: true
+        threshold: 52428800
+        path: '%kernel.project_dir%'
+      database:
+        enabled: true
+        connections:
+          default:
+            service: 'Doctrine\DBAL\Connection'
+            check_sql: 'SELECT 1'
   info:
-    enabled: true                       # If info endpoint is enabled
-    builtin:                            # Builtin info collector, change list for en- or disabling the collector
-      - php                             
-      - symfony
-      - git
+    enabled: true
+    builtin:
+      php:
+        enabled: true
+      symfony:
+        enabled: true
+      git:
+        enabled: true
+      database:
+        enabled: true
+        connections:
+          connection_name: 'Doctrine\DBAL\Connection' 
 ```
+
+Following table outlines the configuration:
+
+| key                                                   | default                    | description                                                                                                                                                                                                                                                                    |
+|-------------------------------------------------------|----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| actuator.health.enabled                               | true                       | if the health endpoint should be enabled                                                                                                                                                                                                                                       |
+| actuator.health.disk_space.enabled                    | true                       | if the builtin disk_space health endpoint should be enabled                                                                                                                                                                                                                    |
+| actuator.health.disk_space.threshold                  | 52428800                   | Size in bytes which has to be free in order that this health endpoint is "UP"                                                                                                                                                                                                  |
+| actuator.health.disk_space.path                       | '%kernel.project_dir%'     | The directory which should be monitored                                                                                                                                                                                                                                        |
+| actuator.health.database.enabled                      | true                       | if the database health endpoint should be enabled                                                                                                                                                                                                                              |
+| actuator.health.database.connections                  | Array                      | Contains a list of names, where each represents an connection to e database. The name itself can be chosen at will                                                                                                                                                             |
+| actuator.health.database.connections.`name`.enabled   | true                       | If the connection associated with this name should monitored                                                                                                                                                                                                                   |
+| actuator.health.database.connections.`name`.service   | 'Doctrine\DBAL\Connection' | The service name inside the dependency injection container. You can lookup your connection name with `bin/console debug:container`                                                                                                                                             |
+| actuator.health.database.connections.`name`.check_sql | 'Select 1'                 | The SQL which will be executed to determine if the database is up. The response will be ignored, it only matters if the sql can be executed without error. If you set this to `~` it will only check if a connection to the database can be established                        |
+| actuator.info.enabled                                 | true                       | if the info endpoint should be enabled                                                                                                                                                                                                                                         |
+| actuator.info.builtin.php.enabled                     | true                       | if the php info endpoint should be enabled                                                                                                                                                                                                                                     |
+| actuator.info.builtin.symfony.enabled                 | true                       | if the symfony info endpoint should be enabled                                                                                                                                                                                                                                 |
+| actuator.info.builtin.git.enabled                     | true                       | if the git info endpoint should be enabled                                                                                                                                                                                                                                     |
+| actuator.info.builtin.database.enabled                | true                       | if the database info endpoint should be enabled                                                                                                                                                                                                                                |
+| actuator.info.builtin.database.connections            | Array                      | List of connections which for which the info endpoint should return the database informations. The list contains of a key which can be choosen at your own will. The second argument is the service in the DIC. You can lookup your service with `bin/console debug:container` |
 
 ## Roadmap
 

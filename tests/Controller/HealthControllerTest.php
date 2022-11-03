@@ -32,7 +32,5 @@ class HealthControllerTest extends ControllerTestCase
         self::assertIsArray($response);
         self::assertArrayHasKey('status', $response);
         self::assertEquals(Health::UP, $response['status']);
-        self::assertArrayHasKey('details', $response);
-        self::assertCount(0, $response['details']);
     }
 }

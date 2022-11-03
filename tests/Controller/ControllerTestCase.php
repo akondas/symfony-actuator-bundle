@@ -17,6 +17,9 @@ abstract class ControllerTestCase extends TestCase
 
     protected function setUp(): void
     {
+        if (file_exists('/buddy/symfony-actuator-bundle/var/cache')) {
+            exec('rm -Rf /buddy/symfony-actuator-bundle/var/cache');
+        }
         $this->kernel = new Kernel('test', false);
         $this->client = new KernelBrowser($this->kernel);
         $this->client->disableReboot();

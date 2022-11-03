@@ -163,36 +163,32 @@ class ActuatorExtensionTest extends TestCase
         $this->extension->load($config, $this->containerBuilder);
 
         // then
-        self::assertFalse($this->containerBuilder->hasDefinition(Php::class));
-        self::assertFalse($this->containerBuilder->hasDefinition(Symfony::class));
-        self::assertFalse($this->containerBuilder->hasDefinition(Git::class));
+        self::assertTrue($this->containerBuilder->hasDefinition(Php::class));
+        self::assertTrue($this->containerBuilder->hasDefinition(Symfony::class));
+        self::assertTrue($this->containerBuilder->hasDefinition(Git::class));
     }
 
     public function testInfoBuiltinListCanBeDefined(): void
     {
         // given
-        $config = ['actuator' => ['info' => ['builtin' => ['php']]]];
+        $config = ['actuator' => ['info' => ['builtin' => ['php' => ['enabled' => true]]]]];
 
         // when
         $this->extension->load($config, $this->containerBuilder);
 
         // then
         self::assertTrue($this->containerBuilder->hasDefinition(Php::class));
-        self::assertFalse($this->containerBuilder->hasDefinition(Symfony::class));
-        self::assertFalse($this->containerBuilder->hasDefinition(Git::class));
     }
 
     public function testInfoBuiltinListCanBeDefinedWithMultipleEntries(): void
     {
         // given
-        $config = ['actuator' => ['info' => ['builtin' => ['php', 'symfony']]]];
+        $config = ['actuator' => ['info' => ['builtin' => ['git' => ['enabled' => false]]]]];
 
         // when
         $this->extension->load($config, $this->containerBuilder);
 
         // then
-        self::assertTrue($this->containerBuilder->hasDefinition(Php::class));
-        self::assertTrue($this->containerBuilder->hasDefinition(Symfony::class));
         self::assertFalse($this->containerBuilder->hasDefinition(Git::class));
     }
 }
