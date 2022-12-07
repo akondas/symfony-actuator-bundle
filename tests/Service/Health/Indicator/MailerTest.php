@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Chaos\ActuatorBundle\Tests\Service\Health\Indicator;
 
 use Akondas\ActuatorBundle\Service\Health\Indicator\Mailer;
@@ -27,12 +29,10 @@ class MailerTest extends TestCase
 
     /**
      * @param array<string, TransportInterface> $transports
-     * @param array<TransportHealthIndicator> $transportHealthIndicators
-     * @return Mailer
+     * @param array<TransportHealthIndicator>   $transportHealthIndicators
      */
     private function build(array $transports = [], array $transportHealthIndicators = []): Mailer
     {
         return new Mailer($transports, $transportHealthIndicators);
     }
-
 }
