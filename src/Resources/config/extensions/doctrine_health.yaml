@@ -1,0 +1,5 @@
+services:
+  Akondas\ActuatorBundle\Service\Health\Indicator\Database:
+    tags: ['akondas.health_indicator']
+    arguments:
+      - [ ]

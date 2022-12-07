@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Chaos\ActuatorBundle\Tests\DependencyInjection;
 
 use Akondas\ActuatorBundle\DependencyInjection\ActuatorExtension;
-use Akondas\ActuatorBundle\Service\Health\Indicator\DiskSpaceHealthIndicator;
+use Akondas\ActuatorBundle\Service\Health\Indicator\Database;
+use Akondas\ActuatorBundle\Service\Health\Indicator\DiskSpace;
+use Akondas\ActuatorBundle\Service\Health\Indicator\Mailer;
 use Akondas\ActuatorBundle\Service\Info\Collector\Git;
 use Akondas\ActuatorBundle\Service\Info\Collector\Php;
 use Akondas\ActuatorBundle\Service\Info\Collector\Symfony;
@@ -49,7 +51,7 @@ class ActuatorExtensionTest extends TestCase
         $this->extension->load([], $this->containerBuilder);
 
         // then
-        self::assertTrue($this->containerBuilder->hasDefinition(DiskSpaceHealthIndicator::class));
+        self::assertTrue($this->containerBuilder->hasDefinition(DiskSpace::class));
     }
 
     public function testHealthBuiltinDiskSpaceHasDefaultThreshold(): void
@@ -58,9 +60,9 @@ class ActuatorExtensionTest extends TestCase
         $this->extension->load([], $this->containerBuilder);
 
         // then
-        self::assertTrue($this->containerBuilder->hasDefinition(DiskSpaceHealthIndicator::class));
-        self::assertCount(2, $this->containerBuilder->getDefinition(DiskSpaceHealthIndicator::class)->getArguments());
-        self::assertEquals(50 * 1024 * 1024, $this->containerBuilder->getDefinition(DiskSpaceHealthIndicator::class)->getArguments()[1]);
+        self::assertTrue($this->containerBuilder->hasDefinition(DiskSpace::class));
+        self::assertCount(2, $this->containerBuilder->getDefinition(DiskSpace::class)->getArguments());
+        self::assertEquals(50 * 1024 * 1024, $this->containerBuilder->getDefinition(DiskSpace::class)->getArguments()[1]);
     }
 
     public function testHealthBuiltinDiskSpaceHasDefaultDirectory(): void
@@ -69,9 +71,9 @@ class ActuatorExtensionTest extends TestCase
         $this->extension->load([], $this->containerBuilder);
 
         // then
-        self::assertTrue($this->containerBuilder->hasDefinition(DiskSpaceHealthIndicator::class));
-        self::assertCount(2, $this->containerBuilder->getDefinition(DiskSpaceHealthIndicator::class)->getArguments());
-        self::assertEquals('%kernel.project_dir%', $this->containerBuilder->getDefinition(DiskSpaceHealthIndicator::class)->getArguments()[0]);
+        self::assertTrue($this->containerBuilder->hasDefinition(DiskSpace::class));
+        self::assertCount(2, $this->containerBuilder->getDefinition(DiskSpace::class)->getArguments());
+        self::assertEquals('%kernel.project_dir%', $this->containerBuilder->getDefinition(DiskSpace::class)->getArguments()[0]);
     }
 
     public function testHealthBuiltinDiskSpaceCanBeDisabled(): void
@@ -83,7 +85,7 @@ class ActuatorExtensionTest extends TestCase
         $this->extension->load($config, $this->containerBuilder);
 
         // then
-        self::assertFalse($this->containerBuilder->hasDefinition(DiskSpaceHealthIndicator::class));
+        self::assertFalse($this->containerBuilder->hasDefinition(DiskSpace::class));
     }
 
     public function testHealthBuiltinDiskSpaceThresholdCanBeOverwritten(): void
@@ -95,9 +97,9 @@ class ActuatorExtensionTest extends TestCase
         $this->extension->load($config, $this->containerBuilder);
 
         // then
-        self::assertTrue($this->containerBuilder->hasDefinition(DiskSpaceHealthIndicator::class));
-        self::assertCount(2, $this->containerBuilder->getDefinition(DiskSpaceHealthIndicator::class)->getArguments());
-        self::assertEquals(1024, $this->containerBuilder->getDefinition(DiskSpaceHealthIndicator::class)->getArguments()[1]);
+        self::assertTrue($this->containerBuilder->hasDefinition(DiskSpace::class));
+        self::assertCount(2, $this->containerBuilder->getDefinition(DiskSpace::class)->getArguments());
+        self::assertEquals(1024, $this->containerBuilder->getDefinition(DiskSpace::class)->getArguments()[1]);
     }
 
     public function testHealthBuiltinDiskSpaceDirectoryCanBeOverwritten(): void
@@ -109,9 +111,33 @@ class ActuatorExtensionTest extends TestCase
         $this->extension->load($config, $this->containerBuilder);
 
         // then
-        self::assertTrue($this->containerBuilder->hasDefinition(DiskSpaceHealthIndicator::class));
-        self::assertCount(2, $this->containerBuilder->getDefinition(DiskSpaceHealthIndicator::class)->getArguments());
-        self::assertEquals('someValue', $this->containerBuilder->getDefinition(DiskSpaceHealthIndicator::class)->getArguments()[0]);
+        self::assertTrue($this->containerBuilder->hasDefinition(DiskSpace::class));
+        self::assertCount(2, $this->containerBuilder->getDefinition(DiskSpace::class)->getArguments());
+        self::assertEquals('someValue', $this->containerBuilder->getDefinition(DiskSpace::class)->getArguments()[0]);
+    }
+
+    public function testHealthDatabaseDefaultDisabled(): void
+    {
+        // given
+        $config = ['actuator' => ['health' => ['builtin' => ['database' => ['enabled' => true]]]]];
+
+        // when
+        $this->extension->load($config, $this->containerBuilder);
+
+        // then
+        self::assertFalse($this->containerBuilder->hasDefinition(Database::class));
+    }
+
+    public function testHealthMailerDefaultDisabled(): void
+    {
+        // given
+        $config = ['actuator' => ['health' => ['builtin' => ['mailer' => ['enabled' => true]]]]];
+
+        // when
+        $this->extension->load($config, $this->containerBuilder);
+
+        // then
+        self::assertFalse($this->containerBuilder->hasDefinition(Mailer::class));
     }
 
     public function testInfoIsEnabledByDefault(): void

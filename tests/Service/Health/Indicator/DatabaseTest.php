@@ -6,16 +6,16 @@ namespace Chaos\ActuatorBundle\Tests\Service\Health\Indicator;
 
 use Akondas\ActuatorBundle\Service\Health\Health;
 use Akondas\ActuatorBundle\Service\Health\HealthStack;
-use Akondas\ActuatorBundle\Service\Health\Indicator\DatabaseConnectionHealthIndicator;
+use Akondas\ActuatorBundle\Service\Health\Indicator\Database;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\DriverException;
 use PHPUnit\Framework\TestCase;
 
-class DatabaseConnectionHealthIndicatorTest extends TestCase
+class DatabaseTest extends TestCase
 {
     public function testName(): void
     {
-        $databaseHealthIndicator = new DatabaseConnectionHealthIndicator([]);
+        $databaseHealthIndicator = new Database([]);
 
         self::assertEquals('database', $databaseHealthIndicator->name());
     }
@@ -30,7 +30,7 @@ class DatabaseConnectionHealthIndicatorTest extends TestCase
             ],
         ];
 
-        $healthIndicator = new DatabaseConnectionHealthIndicator($checks); // @phpstan-ignore-line
+        $healthIndicator = new Database($checks); // @phpstan-ignore-line
 
         $health = $healthIndicator->health();
 
@@ -50,7 +50,7 @@ class DatabaseConnectionHealthIndicatorTest extends TestCase
                 'sql' => null,
             ],
         ];
-        $healthIndicator = new DatabaseConnectionHealthIndicator($checks);
+        $healthIndicator = new Database($checks);
 
         $health = $healthIndicator->health();
 
@@ -72,7 +72,7 @@ class DatabaseConnectionHealthIndicatorTest extends TestCase
                 'sql' => null,
             ],
         ];
-        $healthIndicator = new DatabaseConnectionHealthIndicator($checks);
+        $healthIndicator = new Database($checks);
 
         $health = $healthIndicator->health();
 
@@ -93,7 +93,7 @@ class DatabaseConnectionHealthIndicatorTest extends TestCase
                 'sql' => 'SELECT 1=1',
             ],
         ];
-        $healthIndicator = new DatabaseConnectionHealthIndicator($checks);
+        $healthIndicator = new Database($checks);
 
         $health = $healthIndicator->health();
 
@@ -115,7 +115,7 @@ class DatabaseConnectionHealthIndicatorTest extends TestCase
                 'sql' => 'SELECT 1=1',
             ],
         ];
-        $healthIndicator = new DatabaseConnectionHealthIndicator($checks);
+        $healthIndicator = new Database($checks);
 
         $health = $healthIndicator->health();
 
@@ -145,7 +145,7 @@ class DatabaseConnectionHealthIndicatorTest extends TestCase
                 'sql' => null,
             ],
         ];
-        $healthIndicator = new DatabaseConnectionHealthIndicator($checks);
+        $healthIndicator = new Database($checks);
 
         $health = $healthIndicator->health();
 

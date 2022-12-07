@@ -1,0 +1,14 @@
+services:
+  Akondas\ActuatorBundle\Service\Health\Indicator\MailerTransport\NullTransport:
+    tags: ['akondas.health_indicator_mail_transports']
+
+  Akondas\ActuatorBundle\Service\Health\Indicator\MailerTransport\SmtpTransport:
+    tags: ['akondas.health_indicator_mail_transports']
+
+  Akondas\ActuatorBundle\Service\Health\Indicator\Mailer:
+    tags: ['akondas.health_indicator']
+    arguments:
+      $transports: []
+      $mailerTransportHealthIndicators: !tagged_iterator { tag: akondas.health_indicator_mail_transports }
+
+

@@ -10,7 +10,7 @@ use Akondas\ActuatorBundle\Service\Health\HealthStack;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
-class DatabaseConnectionHealthIndicator implements HealthIndicator
+class Database implements HealthIndicator
 {
     /**
      * @var array<array{'connection': Connection, 'sql': ?string}>

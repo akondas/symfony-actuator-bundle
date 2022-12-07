@@ -33,7 +33,8 @@
 
         "phpstan/phpstan-phpunit": "^1.1",
         "ext-json": "*",
-        "doctrine/doctrine-bundle": "^2.7"
+        "doctrine/doctrine-bundle": "^2.7",
+        "symfony/mailer": "^5.4"
     },
     "autoload": {
         "psr-4": {
