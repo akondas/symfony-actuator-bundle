@@ -69,7 +69,9 @@ jobs:
 
       - name: Add library as repository
         working-directory: ./example
-        run: composer config repositories.library path ../library
+        run: |
+          composer config repositories.library path ../library
+          composer config minimum-stability dev
 
       - name: Install library as dependency
         working-directory: ./example
