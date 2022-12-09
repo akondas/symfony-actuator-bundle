@@ -67,11 +67,10 @@ jobs:
       - name: Download symfony
         run: symfony new --no-git --version=${{ matrix.symfony-versions }} --php=${{ matrix.php-versions }} example
 
-      - name: Change working path
-        run: cd example
-
       - name: Add library as repository
+        working-directory: ./example
         run: composer config repositories.library path ../library
 
       - name: Install library as dependency
+        working-directory: ./example
         run: composer require akondas/symfony-actuator-bundle
