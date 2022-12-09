@@ -1,0 +1,91 @@
+name: build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  composer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Validate composer
+        run: composer validate
+
+  test:
+    needs: composer
+    strategy:
+      matrix:
+        php-versions: [ '7.4', '8.0', '8.1', '8.2' ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: mbstring, intl, zip
+          coverage: none
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download dependencies
+        run: composer install
+
+      - name: Run build checks
+        run: composer build
+        env:
+          PHP_CS_FIXER_IGNORE_ENV: true
+
+  symfony-compliance:
+    needs: build
+    strategy:
+      matrix:
+        include:
+          - php-versions: "7.4"
+            symfony-versions: "5.4"
+          - php-versions: "8.0"
+            symfony-versions: "6.0"
+          - php-versions: "8.1"
+            symfony-versions: "6.1"
+          - php-versions: "8.2"
+            symfony-versions: "6.1"
+          - php-versions: "8.2"
+            symfony-versions: "6.2"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: mbstring, intl, zip
+          coverage: none
+
+      - name: "Install symfony-cli"
+        run: |
+          curl -sS https://get.symfony.com/cli/installer | bash
+          mv $HOME/.symfony5/bin/symfony /usr/local/bin/symfony
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          path: 'library'
+
+      - name: Download symfony
+        run: symfony new --no-git --version=${{ matrix.symfony-versions }} --php=${{ matrix.php-versions }} example
+
+      - name: Add library as repository
+        working-directory: ./example
+        run: |
+          composer config repositories.library path ../library
+          composer config minimum-stability dev
+
+      - name: Install library as dependency
+        working-directory: ./example
+        run: composer require akondas/symfony-actuator-bundle
