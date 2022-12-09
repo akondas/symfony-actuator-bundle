@@ -65,7 +65,7 @@ jobs:
           path: 'library'
 
       - name: Download symfony
-        run: symfony new --version=${{ matrix.symfony-versions }} --php=${{ matrix.php-versions }} example
+        run: symfony new --no-git --version=${{ matrix.symfony-versions }} --php=${{ matrix.php-versions }} example
 
       - name: Change working path
         run: cd example
