@@ -33,6 +33,10 @@ class Mailer implements Collector
             ];
         }
 
+        if (count($transportInfo) === 0) {
+            return new Info('mailer', []);
+        }
+
         return new Info('mailer', [
             'transport' => $transportInfo,
         ]);

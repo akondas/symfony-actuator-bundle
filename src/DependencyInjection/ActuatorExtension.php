@@ -134,8 +134,8 @@ final class ActuatorExtension extends Extension
                 $databaseConfig = $config['builtin']['database'];
                 if (isset($databaseConfig['connections']) && is_array($databaseConfig['connections'])) {
                     $connectionReferences = [];
-                    foreach ($databaseConfig['connections'] as $name => $connectionDefintion) {
-                        $connectionReferences[$name] = new Reference($connectionDefintion);
+                    foreach ($databaseConfig['connections'] as $name => $connectionDefinition) {
+                        $connectionReferences[$name] = new Reference($connectionDefinition);
                     }
                     $definition = $container->getDefinition(InfoCollector\Database::class);
                     $definition->replaceArgument(0, $connectionReferences);
