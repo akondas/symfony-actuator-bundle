@@ -1,0 +1,7 @@
+services:
+  Akondas\ActuatorBundle\Service\Info\Collector\Mailer:
+    tags: ['akondas.info_collector']
+    arguments:
+      - []
+
+

@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Chaos\ActuatorBundle\Tests\Service\Health\Indicator;
 
 use Akondas\ActuatorBundle\Service\Health\Health;
-use Akondas\ActuatorBundle\Service\Health\Indicator\DiskSpaceHealthIndicator;
+use Akondas\ActuatorBundle\Service\Health\Indicator\DiskSpace;
 use PHPUnit\Framework\TestCase;
 
-class DiskSpaceHealthIndicatorTest extends TestCase
+class DiskSpaceTest extends TestCase
 {
     public function testName(): void
     {
-        $diskSpaceHealthIndicator = new DiskSpaceHealthIndicator(
+        $diskSpaceHealthIndicator = new DiskSpace(
             sys_get_temp_dir(),
             10000
         );
@@ -23,7 +23,7 @@ class DiskSpaceHealthIndicatorTest extends TestCase
     public function testNotHealthyIfDiskFreeSpaceReturnedFalse(): void
     {
         // given
-        $diskSpaceHealthIndicator = new DiskSpaceHealthIndicator(
+        $diskSpaceHealthIndicator = new DiskSpace(
             '/not-existing',
             10000
         );
@@ -38,7 +38,7 @@ class DiskSpaceHealthIndicatorTest extends TestCase
     public function testNotHealthyIfDiskFreeSpaceIsBelowThreshold(): void
     {
         // given
-        $diskSpaceHealthIndicator = new DiskSpaceHealthIndicator(
+        $diskSpaceHealthIndicator = new DiskSpace(
             sys_get_temp_dir(),
             PHP_INT_MAX
         );
@@ -60,7 +60,7 @@ class DiskSpaceHealthIndicatorTest extends TestCase
     public function testHealthyIfDiskFreeSpaceIsBelowThreshold(): void
     {
         // given
-        $diskSpaceHealthIndicator = new DiskSpaceHealthIndicator(
+        $diskSpaceHealthIndicator = new DiskSpace(
             sys_get_temp_dir(),
             0
         );

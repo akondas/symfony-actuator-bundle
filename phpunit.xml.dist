@@ -11,9 +11,18 @@
          verbose="true"
          colors="true"
 >
+
+    <php>
+        <ini name="display_errors" value="1" />
+        <ini name="error_reporting" value="-1" />
+        <server name="APP_ENV" value="test" force="true" />
+        <server name="APP_DEBUG" value="false" force="true" />
+        <server name="SHELL_VERBOSITY" value="-1" />
+    </php>
+
     <testsuites>
         <testsuite name="default">
-            <directory suffix="Test.php">tests</directory>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
 

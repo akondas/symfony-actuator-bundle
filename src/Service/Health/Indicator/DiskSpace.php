@@ -7,7 +7,7 @@ namespace Akondas\ActuatorBundle\Service\Health\Indicator;
 use Akondas\ActuatorBundle\Service\Health\Health;
 use Akondas\ActuatorBundle\Service\Health\HealthInterface;
 
-class DiskSpaceHealthIndicator implements HealthIndicator
+class DiskSpace implements HealthIndicator
 {
     private string $path;
     private int $threshold;

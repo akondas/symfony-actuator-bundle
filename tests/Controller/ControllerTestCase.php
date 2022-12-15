@@ -17,12 +17,8 @@ abstract class ControllerTestCase extends TestCase
 
     protected function setUp(): void
     {
-        if (file_exists('/buddy/symfony-actuator-bundle/var/cache')) {
-            exec('rm -Rf /buddy/symfony-actuator-bundle/var/cache');
-        }
         $this->kernel = new Kernel('test', false);
         $this->client = new KernelBrowser($this->kernel);
-        $this->client->disableReboot();
         $this->kernel->boot();
     }
 
@@ -36,14 +32,12 @@ abstract class ControllerTestCase extends TestCase
 
         $this->kernel = new Kernel('test', false, $config);
         $this->client = new KernelBrowser($this->kernel);
-        $this->client->disableReboot();
         $this->kernel->boot();
     }
 
     protected function tearDown(): void
     {
         $this->deleteCache();
-        $this->kernel->shutdown();
     }
 
     protected function deleteCache(): void

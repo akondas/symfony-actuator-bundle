@@ -39,10 +39,10 @@ class Kernel extends BaseKernel
         ];
     }
 
-    private function configureContainer(ContainerConfigurator $containerConfigurator, LoaderInterface $loader): void
+    private function configureContainer(ContainerConfigurator $container, LoaderInterface $loader): void
     {
         $loader->load($this->getProjectDir().'/src/Resources/config/services_test.yaml');
-        $containerConfigurator->extension('actuator', $this->actuatorConfig);
+        $container->extension('actuator', $this->actuatorConfig);
     }
 
     protected function configureRoutes(RoutingConfigurator $routes): void
